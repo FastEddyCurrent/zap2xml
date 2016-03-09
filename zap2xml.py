@@ -1,4 +1,4 @@
-# zap2xml - zap2it tvschedule scraper - <zap2xml@gmail.com>
+# zap2xml - zap2it tvschedule scraper -
 
 import time
 from HTMLParser import HTMLParser
