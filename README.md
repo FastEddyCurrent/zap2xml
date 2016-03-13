@@ -5,6 +5,8 @@ Requires Mechanize addon from superrepo
 
 https://superrepo.org/kodi/addon/script.module.mechanize/
 
+View this in raw mode
+
 crontab entry
 
 *     *     *   *    *        command to be executed
