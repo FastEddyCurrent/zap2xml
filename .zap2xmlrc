@@ -1,4 +1,4 @@
 user=somebody@domain.com
 pass=password
-#proxy=174.143.201.164:80 
-fuck=fuck #ignored
+#proxy=127.0.0.1:80
+stuff=stuff #ignored
