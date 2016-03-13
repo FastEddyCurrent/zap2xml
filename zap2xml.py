@@ -44,7 +44,7 @@ class Zap2xmllog():
     quiet = False
 
     def __init__(self):
-        logfile = 'zap2xml.log'
+        logfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'zap2xml.log')
         if os.path.exists(logfile):
             os.unlink(logfile)
         logging.basicConfig(filename=logfile,level=logging.DEBUG,format='%(asctime)s %(message)s')
@@ -105,7 +105,7 @@ import mechanize
 # if homeDir is None : homeDir = homeDir='.'
 # confFile = homeDir + '/.zap2xmlrc'
 
-confFile = os.path.join(os.getcwd(), ".zap2xmlrc")
+confFile = os.path.join(os.path.dirname(os.path.realpath(__file__)), ".zap2xmlrc")
 
 # Defaults
 start = 0
@@ -1756,12 +1756,12 @@ zap2xml <zap2xml_python\@something.com> (2015-12-14)\n\
 
 
 def main():
-    global loggedinMatchZ, count, XTVD_startTime, XTVD_endTime, zlineupId
+    global loggedinMatchZ, count, XTVD_startTime, XTVD_endTime, zlineupId, outFile
     global gridHours, ncsdays, ncdays, days, cacheDir, gridtimes,exp,tba, mismatch,includeXMLTV
     try:
         option_parse()
         s1 = time.time()
-        cacheDir = os.path.join(os.getcwd(), cacheDir)
+        cacheDir = os.path.join(os.path.dirname(os.path.realpath(__file__)), cacheDir)
         if not os.path.exists(cacheDir):
             os.mkdir(cacheDir)
         deleteOldCache()
@@ -1874,8 +1874,8 @@ def main():
         s2 = time.time()
         log.pout(("Downloaded %d%s%d%s" %(tb," bytes in ",treq," http requests.\n")),'info')
         if expired > 0:
-
             log.pout("Expired programs: " + ("%d" % expired) + "\n",'info')
+        outFile = os.path.join(os.path.dirname(os.path.realpath(__file__)),outFile)
         log.pout("Writing XML file: " + outFile + "\n",'info')
         # enc = 'ISO-8859-1'  # f this it's only 256 chars
         # codec = 'iso8859-1'
