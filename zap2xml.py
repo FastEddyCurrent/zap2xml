@@ -89,7 +89,7 @@ mechLib = 'script.module.mechanize/lib'
 if re.search('openelec', platform.uname()[1], re.IGNORECASE) or os.path.exists(kodiPath):
     log.pout("Found openelec node name or " + kodiPath,'info',printOut = False)
     if os.path.exists(kodiPath + mechLib):
-        sys.path.append(mechLib)
+        sys.path.append(kodiPath + mechLib)
     else: log.pout("Mechanize addon not installed error",'error')
 import mechanize
 
