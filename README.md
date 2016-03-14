@@ -9,14 +9,8 @@ View this in raw mode
 
 crontab entry
 
-*     *     *   *    *        command to be executed
--     -     -   -    -
-|     |     |   |    |
-|     |     |   |    +----- day of week (0 - 6) (Sunday=0)
-|     |     |   +------- month (1 - 12)
-|     |     +--------- day of        month (1 - 31)
-|     +----------- hour (0 - 23)
-+------------- min (0 - 59)
+min(0 - 59) hour(0 - 23) day of month(1 - 31) month(1 - 12) day of week(0 - 6)(Sunday=0)  command to be executed
+
 crontab -e example
 
 0 2 * * 0,3 /usr/bin/python /storage/downloads/zap2xml/zap2xml.py
