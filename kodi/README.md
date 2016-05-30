@@ -1,4 +1,4 @@
-This directory contains the tools to build a Kodi addon for sd2xmltv
+This directory contains the tools to build a Kodi addon for zap2xml.
 
 This must be run on a Linux machine (tested on Xubuntu 14.0.4LTS)
 
@@ -9,25 +9,13 @@ distro because perl is not available.
 
 Using the addon:
 
-1) Move the tools.module.sd2xmltv-<version>.zip to your OpenELEC machine using whatever method you are the most comfortable with.
-2) Navilgate to SYSTEM->Addons->Install from zip
+1) Move the tools.module.zap2xmltv-<version>.zip to your OpenELEC machine using whatever method you are the most comfortable with.
+2) Navigate to SYSTEM->Addons->Install from zip
     == use the file browser to navigate to the file and select it.
 3) Navigate to SYSTEM->Addons->My Addons->Program Addons->sd2xmltv
-4) Select Configure and set your Schedules Direct Username and Password.
+4) Select Configure and set your Zap2It Username and Password.
 5) Reboot the machine
-6) Congigure your tv backend to use tv_grab_sd2xmltv
+6) Congigure your tv backend to use tv_grab_zap2xmltv
 
 Notes:
-For some reason Schecdules Direct doesn't seem to keep your headend configuration on the JSON servers.  
-If you haven't used a JSON grabber before you will need to reconfigure your headend again using sd2xmltv
-+++++
-OpenELEC instructions:
-ssh into your openelec machine.
-cd /storage/.kodi/addons/tools.module.sd2xmltv
-python sd2xmltv.py -u <sduserid> -p <sdpassword> -m
---- follow the onscreen prompts to add your headend.
-+++++
 
-The runtime can be shortened by customizing the whitelist in sd2xmltv.py to the channels you use, 
-so that the programs and channels you don't use are not downloaded.  If you do this you will need 
-to redo it every time you update this addon.
