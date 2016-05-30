@@ -1,4 +1,4 @@
-# zap2xmltv - zap2it tvschedule scraper -
+# zap2xml - zap2it tvschedule scraper -
 
 import time
 from HTMLParser import HTMLParser
@@ -44,7 +44,7 @@ class Zap2xmllog():
     quiet = False
 
     def __init__(self):
-        logfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'zap2xmltv.log')
+        logfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'zap2xml.log')
         if os.path.exists(logfile):
             os.unlink(logfile)
         logging.basicConfig(filename=logfile,level=logging.DEBUG,format='%(asctime)s %(message)s')
@@ -80,7 +80,7 @@ class Zap2xmllog():
             logging.error(traceback.format_exc())
 
 
-log = Zap2xmltvlog()
+log = Zap2xmllog()
 log.setDebug()
 operSys = platform.uname()[0]
 log.pout(repr(platform.uname()),'info',printOut = False)
@@ -1231,7 +1231,7 @@ def printHeader(fh , enc):
     fh.write("<tv source-info-url=\"http://tvguide.com/\" source-info-name=\"tvguide.com\"")
   else:
     fh.write("<tv source-info-url=\"http://tvschedule.zap2it.com/\" source-info-name=\"zap2it.com\"")
-  fh.write(" generator-info-name=\"zap2xmltv\" generator-info-url=\"zap2xmltv@gmail.com\">\n") #todo not zap2xmltv@gmail.com
+  fh.write(" generator-info-name=\"zap2xml\" generator-info-url=\"zap2xml@gmail.com\">\n") #todo not zap2xml@gmail.com
 
 def printFooter(fh):
   fh.write("</tv>\n")
@@ -1679,7 +1679,7 @@ def option_parse():
 def printHelp ():
     global sTBA, start, outFile, cacheDir, lang, retries, confFile
     print ("\
-zap2xmltv <zap2xmltv_python\@something.com> (2015-12-14)\n\
+zap2xml <zap2xml_python\@something.com> (2015-12-14)\n\
 -u <username>\
 -p <password>\n\
 -d <# of days> (default = " + ("%d" % days) + ")\n\
