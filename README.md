@@ -1,5 +1,5 @@
 # zap2xml
-zap2xml in Python 2.7 for use on Openelec/Kody for the RaspberryPI
+zap2xml in Python 2.7 for use on Openelec/Kodi
 
 Requires Mechanize addon from superrepo
 
