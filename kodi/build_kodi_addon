@@ -3,19 +3,19 @@ set -x
 . config
 #  Package zap2xml as a kodi addon that can be installed from a zip file
 #
-rm -rf tools.module.zap2xmltv
+rm -rf tools.module.zap2xml
 rm -rf unpack
-rm tools.module.zap2xmltv-*.zip
-mkdir tools.module.zap2xmltv
-cp -r base_addon/* tools.module.zap2xmltv
+rm tools.module.zap2xml-*.zip
+mkdir tools.module.zap2xml
+cp -r base_addon/* tools.module.zap2xml
 #
 #  Populate the addon
 #
-cp ../*.py tools.module.zap2xmltv/
-#  add the license files to keep everything on the up-n-up
-cp ../LICENSE  tools.module.sd2xmltv/LICENSE-sd2xmltv
+cp ../*.py tools.module.zap2xml/
+#  todo - add the license files to keep everything on the up-n-up
+# cp ../LICENSE  tools.module.zap2xml/LICENSE-zap2xml
 #
 # update the addon version number
-sed -i tools.module.zap2xmltv/addon.xml -e 's/__VER__/'${ADDON_VERSION}'/g'
-zip -r tools.module.zap2xmltv-${ADDON_VERSION}.zip tools.module.zap2xmltv/
+sed -i tools.module.zap2xml/addon.xml -e 's/__VER__/'${ADDON_VERSION}'/g'
+zip -r tools.module.zap2xml-${ADDON_VERSION}.zip tools.module.zap2xml/
 exit 0
