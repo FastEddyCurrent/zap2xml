@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="tools.module.sd2xmltv"
-       name="sd2xmltv"
-       version="0.1.1"
-       provider-name="astrilchuk">
+<addon id="tools.module.zap2xml"
+       name="zap2xml"
+       version="0.1"
+       provider-name="edit4ever">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
 
@@ -11,7 +11,7 @@
     <provides></provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary>Schedules Direct xmltv grabber</summary>
+    <summary>Zap2It xmltv grabber</summary>
     <description>
 Schedules Direct xmltv grabber using the JSON API
     </description>
