@@ -4,7 +4,6 @@ set -x
 #  Package zap2xml as a kodi addon that can be installed from a zip file
 #
 rm -rf tools.module.zap2xml
-rm -rf unpack
 rm tools.module.zap2xml-*.zip
 mkdir tools.module.zap2xml
 cp -r base_addon/* tools.module.zap2xml
@@ -12,6 +11,7 @@ cp -r base_addon/* tools.module.zap2xml
 #  Populate the addon
 #
 cp ../*.py tools.module.zap2xml/
+cp ../.zap2xmlrc tools.module.zap2xml/
 #  todo - add the license files to keep everything on the up-n-up
 # cp ../LICENSE  tools.module.zap2xml/LICENSE-zap2xml
 #
