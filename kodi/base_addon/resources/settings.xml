@@ -2,7 +2,15 @@
 <settings>
   <category label="30000">
     <setting type="lsep" />
-    <setting id="User"  type="text"   label="30010" default="zap2ituser" />
-    <setting id="Pass"  type="text"   label="30020" default="zap2itpassword" />
+    <setting id="source" type="select" label="30030" lvalues="30031|30032"/>
+    <setting label="30010"  type="text"  id="User"  default="username"/>
+    <setting label="30020"  type="text"  id="Pass"  default="password"/>
+  </category>
+  <category label="30100">
+    <setting type="lsep" />
+    <setting label="30110" type="slider" id="days" default="7" range="1,1,14" option="int"/>
+    <setting label="30120" type="bool" id="cfirst" default="false"/>
+    <setting label="30130" type="bool" id="cicons" default="false"/>
+    <setting label="30140" type="bool" id="allc" default="true"/>
   </category>
 </settings>
