@@ -12,11 +12,8 @@
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary>Zap2It xmltv grabber</summary>
-    <description>
-Schedules Direct xmltv grabber using the JSON API
-    </description>
+    <description>Xmltv grabber using Zap2It or TV Guide account</description>
     <disclaimer>
-
     </disclaimer>
     <platform>all</platform>
   </extension>
