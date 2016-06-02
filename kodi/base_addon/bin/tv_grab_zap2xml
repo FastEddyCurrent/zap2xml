@@ -14,7 +14,7 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
-#  You should have received a copy of the GNU General Public License
+#  You should have received a copy of the GNU General Public License$
 #  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
@@ -23,14 +23,20 @@
 ADDON_HOME="$HOME/.kodi/userdata/addon_data/tools.module.zap2xml"
 ADDON_DIR="$HOME/.kodi/addons/tools.module.zap2xml"
 ADDON_SETTINGS="$ADDON_HOME/settings.xml"
+XMLTV_OUTPUT="$ADDON_HOME/xmltv.xml"
 if [ $# -lt 1 ]
 then
   CD=`pwd`
   cd $ADDON_HOME
   USERID=`grep id=\"User\" $ADDON_SETTINGS | awk '{print $3 }' | sed -e "s,value=,," -e "s,\",,g"`
   PASSWORD=`grep id=\"Pass\" $ADDON_SETTINGS | awk '{print $3 }' | sed -e "s,value=,," -e "s,\",,g"`
-  python $ADDON_DIR/zap2xml.py -u $USERID -p $PASSWORD > zap2xml.log 2>&1 
-  cat xmltv.xml
+  NUMDAYS=`grep id=\"days\" $ADDON_SETTINGS | awk '{print $3 }' | sed -e "s,value,-d," -e "s,=, ," -e "s,\",,g"`
+  EPGSOURCE=`grep id=\"source\" $ADDON_SETTINGS | awk '{print $3 }' | sed -e "s,value=,," -e "s,1,-z," -e "s,0,," -e "s,\",,g"`
+  CHFIRST=`grep id=\"cfirst\" $ADDON_SETTINGS | awk '{print $3 }' | sed -e "s,value=,," -e "s,true,-F," -e "s,false,," -e "s,\",,g"`
+  CHANNELICONS=`grep id=\"cicons\" $ADDON_SETTINGS | awk '{print $3 }' | sed -e "s,value=,," -e "s,true,-i\ icons," -e "s,false,," -e "s,\",,g"`
+  ALLCHANNELS=`grep id=\"allc\" $ADDON_SETTINGS | awk '{print $3 }' | sed -e "s,value=,," -e "s,true,-a," -e "s,false,," -e"s,\",,g"`
+  python $ADDON_DIR/zap2xml.py -u $USERID -p $PASSWORD -o $XMLTV_OUTPUT $EPGSOURCE $NUMDAYS $CHFIRST $ALLCHANNELS $CHANNELICONS > zap2xml.log 2>&1
+  cat $XMLTV_OUTPUT
   cd $CD
   exit 0
 fi
@@ -58,4 +64,4 @@ do case "$1" in
 esac; shift
 done
 
-exit 0
+exit 0s
