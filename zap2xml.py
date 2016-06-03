@@ -437,7 +437,7 @@ def on_a(self, tag, attrs):
             if "number" not in stations[cs]:
                 tnum = urllib.unquote(my_dict["href"])
                 tnum = re.sub("\s","",tnum)
-                # looking for '.'alphanumeric one or more followed by anything, never seems to match
+                # looking for '.'alphanumeric one or more followed by anything
                 # sonmehow matches channels like 3.3
                 tmp = re.search(".*channel=([.\w]+).*",tnum)
                 if tmp:
