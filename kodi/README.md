@@ -1,10 +1,11 @@
+#kodi addon builder
 This directory contains the tools to build a Kodi addon for zap2xml.
 
-This must be run on a Linux machine (tested on Xubuntu 14.0.4LTS)
+This must be run on a Linux machine (tested on Ubuntu 14.0.4LTS)
 
 To build the addon simply type ./build_kodi_addon in this directory.
 
-This addon is designed for use as a replacement for the perl xmltv apps that are dificult/impossible to use on an OpenELEC
+This addon is designed for use as a replacement for the perl xmltv apps that are dificult/impossible to use on an LibreELEC/OpenELEC
 distro because perl is not available.
 
 Using the addon:
