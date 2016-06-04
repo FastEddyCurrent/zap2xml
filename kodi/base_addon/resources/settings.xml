@@ -8,9 +8,9 @@
   </category>
   <category label="30100">
     <setting type="lsep" />
-    <setting label="30110" type="slider" id="days" default="7" range="1,1,14" option="int"/>
+    <setting label="30110" type="slider" id="days" default="3" range="1,1,14" option="int"/>
     <setting label="30120" type="bool" id="cfirst" default="false"/>
     <setting label="30130" type="bool" id="cicons" default="false"/>
-    <setting label="30140" type="bool" id="allc" default="true"/>
+    <setting label="30140" type="bool" id="allc" default="false"/>
   </category>
 </settings>

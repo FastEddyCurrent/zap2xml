@@ -18,4 +18,5 @@ cp ../.zap2xmlrc tools.module.zap2xml/
 # update the addon version number
 sed -i tools.module.zap2xml/addon.xml -e 's/__VER__/'${ADDON_VERSION}'/g'
 zip -r tools.module.zap2xml-${ADDON_VERSION}.zip tools.module.zap2xml/
+rm -rf tools.module.zap2xml
 exit 0
