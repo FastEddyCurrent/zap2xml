@@ -1,5 +1,9 @@
 # zap2xml
-zap2xml in Python 2.7 for use on Openelec/Kodi
+zap2xml in Python 2.7 for use on LibreELEC/Openelec Kodi -- the zap2xml.py file can be used on other installations.
+
+See the README.md file in the Kodi folder for instructions on building the addon.
+
+
 
 
 crontab entry
