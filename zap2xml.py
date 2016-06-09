@@ -947,7 +947,7 @@ def parseTVGGrid(fn):
         if len(tvgfavs)> 0:
             if 'Number' in cjs and cjs['Number'] != '':
                 n = cjs['Number']
-            if cs != tvgfavs[n]:
+            if n not in tvgfavs or cs != tvgfavs[n]:
                 continue
         if cs not in stations:
             stations[cs] = {}
