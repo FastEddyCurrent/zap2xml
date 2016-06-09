@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+	<!--zap2xml-->
+	<string id="30000">User Information</string>
+	<string id="30030">EPG Source</string>
+	<string id="30031">Zap2It</string>
+	<string id="30032">TV Guide</string>
+	<string id="30010">Username</string>
+	<string id="30020">Password</string>
+	<string id="30100">Options</string>
+	<string id="30110">Number of Days to Cache</string>
+	<string id="30120">Channel Name First (before channel number)</string>
+	<string id="30130">Download Channel Icons</string>
+	<string id="30140">Include All Channels (not just favorites)</string>
+</strings>

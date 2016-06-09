@@ -1,9 +1,10 @@
 # zap2xml
-zap2xml in Python 2.7 for use on Openelec/Kody for the RaspberryPI
+zap2xml in Python 2.7 for use on LibreELEC/Openelec Kodi -- the zap2xml.py file can be used on other installations.
 
-Requires Mechanize addon from superrepo
+See the README.md file in the Kodi folder for instructions on building the addon.
 
-https://superrepo.org/kodi/addon/script.module.mechanize/
+
+
 
 crontab entry
 

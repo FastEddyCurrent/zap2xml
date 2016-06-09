@@ -1350,7 +1350,7 @@ def printProgrammes(fh):
         if "imageUrl" in programs[p]:
             fh.write("\t\t<icon src=\"" + programs[p]["imageUrl"] + "\" />\n")
         if "url" in programs[p]:
-            fh.write("\t\t<url>" + programs[p]["url"] + "\" />\n")
+            fh.write("\t\t<icon src=\"" + programs[p]["url"] + "\" />\n")
 
         xs = None
         xe = None
