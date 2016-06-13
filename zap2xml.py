@@ -1235,7 +1235,7 @@ def printHeader(fh , enc):
     fh.write("<tv source-info-url=\"http://tvguide.com/\" source-info-name=\"tvguide.com\"")
   else:
     fh.write("<tv source-info-url=\"http://tvschedule.zap2it.com/\" source-info-name=\"zap2it.com\"")
-  fh.write(" generator-info-name=\"zap2xml\" generator-info-url=\"zap2xml@gmail.com\">\n") #todo not zap2xml@gmail.com
+  fh.write(" generator-info-name=\"zap2xml\" generator-info-url=\"https://github.com/FastEddyCurrent/zap2xml\">\n")
 
 def printFooter(fh):
   fh.write("</tv>\n")
@@ -1693,7 +1693,7 @@ zap2xml <zap2xml_python\@something.com> (2015-12-14)\n\
 -o <output xml filename> (default = "+ outFile + ")\n\
 -c <cacheDirectory> (default = "+ cacheDir +")\n\
 -l <lang> (default =" + lang + ")\n\
--i <iconDirectory> (default = don't download channel icons)\n\
+-i <iconDirectory> (default = don't download channel icons, not supported for TVGUIDE)\n\
 -m <#> = offset program times by # minutes (better to use TZ env var)\n\
 -b = retain website channel order\n\
 -x = output XTVD xml file format (default = XMLTV)\n\
@@ -1774,7 +1774,9 @@ def main():
         deleteOldCache()
 
         if '-z' in options:
-            if '-a' in options:
+            if '-i' in options:
+                log.pout("Warning -i option not supported for TV Guide\n",'warn')
+            if '-a' not in options:  #oops missed not
                 login()
             gridHours = 3
             maxCount = days * (24 / gridHours)
