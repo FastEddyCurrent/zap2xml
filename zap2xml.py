@@ -23,7 +23,6 @@ import urllib2
 
 """
 import requests
-
 from requests.auth import HTTPBasicAuth
 from BeautifulSoup import BeautifulSoup
 import html2text
@@ -341,9 +340,10 @@ def on_td (self, tag, attrs):
                     fn = os.path.join(cacheDir,"I" + cp + ".js.gz")
                     if not os.path.isfile(fn):
                         data = getURL(urlRoot + "gridDetailService?rtype=pgmimg&pgmId=" + cp)
-                        wbf(fn, data)
-                        log.pout("[I] Parsing: " + cp,'info')
-                        parseJSONI(fn)
+                        if data: #sometimes we fail to get the url try to keep going
+                            wbf(fn, data)
+                            log.pout("[I] Parsing: " + cp,'info')
+                            parseJSONI(fn)
         elif re.search('zc-st',my_dict[cls]):
             inStationTd = 1
 
@@ -924,7 +924,7 @@ def parseTVGD(fn):
         tvo = t['tvobject']
         if 'photos' in tvo:
             photos = tvo['photos']
-            phash = None
+            phash = {}
             for ph in photos:
                 w = int(ph['width']) * int(ph['height'])
                 u = ph['url']
@@ -996,6 +996,9 @@ def parseTVGGrid(fn):
                 if re.search(sTBA,  programs[cp]['episode']):
                     tba = 1
             if 'CopyText' in pe and pe['CopyText'] != '':
+                programs[cp]['description'] = pe['CopyText']
+
+            if 'Rating' in pe and pe['Rating'] != '':
                 programs[cp]['rating'] = pe['Rating']
 
             sch = str(int(pe['StartTime']) *1000)
@@ -1042,11 +1045,11 @@ def parseTVGGrid(fn):
                     programs[cp]['url'] = tvgurl[:-1] + url
 
     if '-I' in options or ('-D' in options and catid ==1): # icons or details
-        fn = os.path.join(cacheDir, cp + ".js.gz")
-        if os.path.exists(fn):
-            data = getURL(tvgMapiRoot + "listings/details?program=" + cp) # Beware the headers
+        fn = os.path.join(cacheDir, str(cp) + ".js.gz")
+        if not os.path.exists(fn):  #bug forgot not
+            data = getURL(tvgMapiRoot + "listings/details?program=" + ("%d" % cp)) # Beware the headers
             wbf(fn,data)
-        log.pout("[D] Parsing: " + cp, 'info')
+        log.pout("[D] Parsing: " + str(cp), 'info')
         parseTVGD(fn)
     return
 
@@ -1321,7 +1324,7 @@ def printProgrammes(fh):
             else:
                 fh.write("Movie (" + programs[p]["movie_year"] + ")")
             fh.write("</sub-title>\n")
-        if "description" in programs[p]:
+        if "description" in programs[p] and programs[p]["description"] is not None:
             tmp = "\t\t<desc lang=\"" + lang + "\">" + enc(programs[p]["description"]) + "</desc>\n"
             fh.write(tmp)
         if "credits" in programs[p]:
@@ -1340,7 +1343,7 @@ def printProgrammes(fh):
         elif "originalAirDate" in programs[p] and re.search("^EP|^\d",str(p)):
             date = convDateLocal(programs[p]["originalAirDate"])
         if date is not None:
-            fh.write("\t\t<date>" + date + "</date>\n")
+            fh.write("\t\t<date>" + str(date) + "</date>\n")
         sortThing1 = p
         sortThing2 = "genres"
         if "genres" in programs[p]:
@@ -1350,7 +1353,7 @@ def printProgrammes(fh):
         if "imageUrl" in programs[p]:
             fh.write("\t\t<icon src=\"" + programs[p]["imageUrl"] + "\" />\n")
         if "url" in programs[p]:
-            fh.write("\t\t<icon src=\"" + programs[p]["url"] + "\" />\n")
+            fh.write("\t\t<url>" + programs[p]["url"] + "\" />\n")
 
         xs = None
         xe = None
