@@ -20,7 +20,7 @@ import cookielib
 import urllib
 import inspect
 import urllib2
-
+import datetime
 """
 import requests
 
@@ -35,7 +35,7 @@ LWP::UserAgent #www.mechanize
 XML::LibXML
 libxml2
 lxml
-import datetime
+
 """
 
 
@@ -336,7 +336,7 @@ def on_td (self, tag, attrs):
                         data = getURL(urlRoot + "gridDetailService?pgmId=" + cp)
                         wbf(fn, data)
                         log.pout("[D] Parsing: " + cp,'info')
-                        parseJSOND(fn)
+                    parseJSOND(fn)
                 if "-I" in options:
                     fn = os.path.join(cacheDir,"I" + cp + ".js.gz")
                     if not os.path.isfile(fn):
@@ -648,13 +648,17 @@ def stationToChannel(s):
     return "C%s%s.zap2it.com" % (stations[s]["number"],stations[s]["name"].lower())
   return "I%s.labs.zap2it.com" % (stations[s]["stnNum"])
 
-
 def convDateLocal(t):
-  return time.strftime("%Y%m%d", time.localtime(int(t)/1000))
-
+    if int(t) < 0:
+        tmp = datetime.datetime(1970, 1, 1) + datetime.timedelta(seconds=(int(t)/1000))
+        return tmp.strftime("%Y%m%d")
+    return time.strftime("%Y%m%d", time.localtime((int(t)/1000)))
 
 def convDateLocalXTVD(t):
-  return time.strftime("%Y-%m-%d", time.localtime(int(t)/1000))
+    if int(t) < 0:
+        tmp = datetime.datetime(1970, 1, 1) + datetime.timedelta(seconds=(int(t)/1000))
+        return tmp.strftime("%Y%m%d")
+    return time.strftime("%Y-%m-%d", time.localtime((int(t)/1000)))
 
 
 def convDurationXTVD(duration):
@@ -836,54 +840,56 @@ def parseJSOND(fn):
     t = json.loads(b)
     p=t["program"]
     #todo remove xtra var like sn
-    if "\'seasonNumber\'" in p:
-        sn = p["\'seasonNumber\'"]
+    if "seasonNumber" in p:
+        sn = p["seasonNumber"]
         sn = re.sub("S","",sn,re.IGNORECASE)
         if sn != '':
             programs[cp]["seasonNum"] = sn
 
-    if "\'episodeNumber\'" in p:
-        en = p["\'episodeNumber\'"]
+    if "episodeNumber" in p:
+        en = p["episodeNumber"]
         en = re.sub("E","",en,re.IGNORECASE)
         if en != '':
             programs[cp]["episodeNum"] = en
 
-    if "\'originalAirDate\'" in p:
-        oad = p["\'originalAirDate\'"]
+    if "originalAirDate" in p:
+        oad = p["originalAirDate"]
         if oad != '':
             programs[cp]["originalAirDate"] = oad
 
-    if "\'description\'" in p:
-        desc = p["\'description\'"]
+    if "description" in p:
+        desc = p["description"]
         if desc != '':
             programs[cp]["description"] = desc
 
-    if "\'genres\'" in p:
-        genres = p["\'genres\'"]
+    if "genres" in p:
+        genres = p["genres"]
         i = 1
         for g in genres:
-            programs[cp]["genres"][g.lower] = i
+            programs[cp]["genres"][g.lower()] = i
             i += 1
 
-    if "\'seriesId\'" in p:
-        seriesId = p["\'seriesId\'"]
+    if "seriesId" in p:
+        seriesId = p["seriesId"]
         if seriesId != '':
             programs[cp]["genres"]["series"] = 9
 
-    if "\'credits\'" in p:
-        credits = p["\'credits\'"]
+    if "credits" in p:
+        credits = p["credits"]
         i = 1
+        if"credits" not in programs[cp]:
+            programs[cp]["credits"] = {}
         for g in credits:
             programs[cp]["credits"][g] = i
             i += 1
 
-    if "\'starRating\'" in p:
-        sr = p["\'starRating\'"]
+    if "starRating" in p:
+        sr = p["starRating"]
         tsr = len(sr)
         if re.search("\+$",sr):
             tsr -= 1
-            tsr += ".5"
-        programs[cp]["starRating"] = tsr
+            tsr += 0.5
+        programs[cp]["starRating"] = str(tsr)
 
 
 
@@ -1335,7 +1341,7 @@ def printProgrammes(fh):
             sortThing2 = "credits"
             for g in sorted(programs[p]["credits"], cmp=sortThings):
                 fh.write("\t\t\t<actor>" + enc(g) + "</actor>\n")
-            fh.write("</sub-title>\n")
+            fh.write("\t\t</credits>\n")
         date = None
         if "movie_year" in programs[p]:
             date = programs[p]["movie_year"]
