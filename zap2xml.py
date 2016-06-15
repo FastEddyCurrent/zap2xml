@@ -1371,7 +1371,7 @@ def printProgrammes(fh):
             xs = int(s) - 1
             xe = int(e) - 1
             if s > 0 or e > 0:
-                fh.write("\t\t<episode-num system=\"common\">" + sf + ef + "</episode-num>\n")
+                fh.write("\t\t<episode-num system=\"onscreen\">" + sf + ef + "</episode-num>\n")
 
         dd_prog_id = str(p)
         tmp = re.search("^(..\d{8})(\d{4})",dd_prog_id)
