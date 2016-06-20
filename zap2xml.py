@@ -343,7 +343,7 @@ def on_td (self, tag, attrs):
                         if data: #sometimes we fail to get the url try to keep going
                             wbf(fn, data)
                             log.pout("[I] Parsing: " + cp,'info')
-                            parseJSONI(fn)
+                    parseJSONI(fn)
         elif re.search('zc-st',my_dict[cls]):
             inStationTd = 1
 
@@ -781,10 +781,11 @@ class MyHTMLParser(HTMLParser):
                 tba = 1
             on_span_zc_pg_t = False
         if on_p_zc_pg_d:
-            d = trim(data)
-            if len(d):
-                programs[cp]["description"] = d
-            on_p_zc_pg_d = False
+            if 'description' not in programs[cp]: # needed to not overwrite -D option
+                d = trim(data)
+                if len(d):
+                    programs[cp]["description"] = d
+                on_p_zc_pg_d = False
         if on_li_zc_ic:
             handleTags(data)
             on_li_zc_ic = False
