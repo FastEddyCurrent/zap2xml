@@ -350,6 +350,19 @@ def on_td (self, tag, attrs):
 
 def handleTags(text):
     global schedule,cs,sch
+    if "rating" not in programs[cp]:
+        if re.search("TV-Y",text):
+            programs[cp]["rating"] = 'TV-Y'
+        elif re.search("TV-Y7",text):
+            programs[cp]["rating"] = 'TV-Y7'
+        elif re.search("TV-G",text):
+            programs[cp]["rating"] = 'TV-G'
+        elif re.search("TV-PG",text):
+            programs[cp]["rating"] = 'TV-PG'
+        elif re.search("TV-14",text):
+            programs[cp]["rating"] = 'TV-14'
+        elif re.search("TV-MA",text):
+            programs[cp]["rating"] = 'TV-MA'
     if re.search("LIVE",text):
         if "live" not in schedule[cs][sch]:
             schedule[cs][sch]["live"] = {}
