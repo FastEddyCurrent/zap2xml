@@ -1345,8 +1345,32 @@ def printProgrammes(fh):
                 fh.write("Movie (" + programs[p]["movie_year"] + ")")
             fh.write("</sub-title>\n")
         if "description" in programs[p] and programs[p]["description"] is not None:
-            tmp = "\t\t<desc lang=\"" + lang + "\">" + enc(programs[p]["description"]) + "</desc>\n"
+            fh.write("\t\t<desc lang=\"" + lang + "\">")
+            tmp = enc(programs[p]["description"]) + " "
+            end = "</desc>\n"
+            if "-X" in options:
+                ratings = ""
+                date=""
+                new = ""
+                live = ""
+                cc = ""
+                bullet = u" \u2022 "
+                if "originalAirDate" in programs[p]:
+                    origdate = enc(convDateLocal(programs[p]["originalAirDate"]))
+                    finaldate = datetime.datetime.strptime(origdate, "%Y%m%d").strftime('%B %d, %Y')
+                    date = finaldate
+                if "rating" in programs[p]:
+                    ratings = enc(programs[p]["rating"]) + bullet
+                if "new" in schedule[station][s]:
+                    new = "NEW" + bullet
+                if "live" in schedule[station][s]:
+                    live = "LIVE" + bullet
+                if "cc" in schedule[station][s]:
+                    cc = "CC" + bullet
+                tmp = tmp + live + new + ratings + cc + date
+            tmp = tmp + end
             fh.write(tmp)
+            
         if "credits" in programs[p]:
             fh.write("\t\t<credits>\n")
             global sortThing1, sortThing2
@@ -1731,6 +1755,7 @@ zap2xml <zap2xml_python\@something.com> (2015-12-14)\n\
 -S <#seconds> = sleep between requests to prevent flooding of server\n\
 -D = include details = 1 extra http request per program!\n\
 -I = include icons (image URLs) - 1 extra http request per program!\n\
+-X = append extra details to program description\n\
 -J <xmltv> = include xmltv file in output\n\
 -Y <lineupId> (if not using username/password)\n\
 -Z <zipcode> (if not using username/password)\n\
@@ -1772,6 +1797,7 @@ zap2xml <zap2xml_python\@something.com> (2015-12-14)\n\
 -S <#seconds> = sleep between requests to prevent flooding of server\n\                     DONE
 -D = include details = 1 extra http request per program!\n\                                 DONE
 -I = include icons (image URLs) - 1 extra http request per program!\n\                      DONE
+-X = append extra details to program description\n\                                         DONE
 -J <xmltv> = include xmltv file in output\n\                                                DONE
 -Y <lineupId> (if not using username/password)\n\                                           TEST FIX
 -Z <zipcode> (if not using username/password)\n\                                            TEST FIX dump lineup for zipcode
