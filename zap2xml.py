@@ -1353,6 +1353,7 @@ def printProgrammes(fh):
                 date=""
                 new = ""
                 live = ""
+                hd = ""
                 cc = ""
                 bullet = u" \u2022 "
                 if "originalAirDate" in programs[p]:
@@ -1365,12 +1366,14 @@ def printProgrammes(fh):
                     new = "NEW" + bullet
                 if "live" in schedule[station][s]:
                     live = "LIVE" + bullet
+                if "quality" in schedule[station][s]:
+                    hd = "HD" + bullet
                 if "cc" in schedule[station][s]:
                     cc = "CC" + bullet
-                tmp = tmp + live + new + ratings + cc + date
+                tmp = tmp + live + new + ratings + hd + cc + date
             tmp = tmp + end
             fh.write(tmp)
-            
+         
         if "credits" in programs[p]:
             fh.write("\t\t<credits>\n")
             global sortThing1, sortThing2
