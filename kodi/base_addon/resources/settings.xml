@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
   <category label="30000">
-    <setting type="lsep" />
     <setting id="source" type="select" label="30030" lvalues="30031|30032"/>
     <setting label="30010"  type="text"  id="User"  default="username"/>
     <setting label="30020"  type="text"  id="Pass"  default="password"/>
   </category>
   <category label="30100">
-    <setting type="lsep" />
     <setting label="30110" type="slider" id="days" default="3" range="1,1,14" option="int"/>
     <setting label="30120" type="bool" id="cfirst" default="false"/>
     <setting label="30130" type="bool" id="cicons" default="false"/>
     <setting label="30140" type="bool" id="allc" default="false"/>
-    <setting type="lsep" />
+    <setting label="30170" type="bool" id="xdesc" default="false"/>
+    <setting type="sep"/>
+    <setting label="30149" type="lsep" />
+    <setting type="sep"/>
     <setting label="30150" type="bool" id="picons" default="false"/>
     <setting label="30160" type="bool" id="xdetails" default="false"/>
-    <setting label="30170" type="bool" id="xdesc" default="false"/>
   </category>
 </settings>
