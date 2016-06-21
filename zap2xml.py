@@ -1364,8 +1364,14 @@ def printProgrammes(fh):
                     ratings = enc(programs[p]["rating"]) + bullet
                 if "new" in schedule[station][s]:
                     new = "NEW" + bullet
+                    origdate = startTime
+                    finaldate = datetime.datetime.strptime(origdate, "%Y%m%d%H%M%S").strftime('%B %d, %Y')
+                    date = finaldate
                 if "live" in schedule[station][s]:
                     live = "LIVE" + bullet
+                    origdate = startTime
+                    finaldate = datetime.datetime.strptime(origdate, "%Y%m%d%H%M%S").strftime('%B %d, %Y')
+                    date = finaldate
                 if "quality" in schedule[station][s]:
                     hd = "HD" + bullet
                 if "cc" in schedule[station][s]:
