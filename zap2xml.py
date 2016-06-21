@@ -1650,7 +1650,7 @@ def option_parse():
     global outputXTVD, includeXMLTV, lineuptype, lineupname, lineuplocation, zlineupId, zipcode
 
     optlist = args = None
-    optlist, args  = getopt.getopt(sys.argv[1:], "?aA:bc:C:d:DeE:Fgi:Il:jJ:Lm:Mn:N:o:Op:P:qr:s:S:t:Tu:UwxY:zZ:X:")
+    optlist, args  = getopt.getopt(sys.argv[1:], "?aA:bc:C:d:DeE:Fgi:Il:jJ:Lm:Mn:N:o:Op:P:qr:s:S:t:Tu:UwxY:zZ:X")
     options = dict(optlist)
     if "-?" in options:
         printHelp()
