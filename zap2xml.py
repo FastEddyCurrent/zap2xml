@@ -399,8 +399,6 @@ def on_li(self, tag, attrs):
         elif re.search('zc-icons-live',my_dict[cls]):
             schedule[cs][sch]["live"] = 'Live'
             setOriginalAirDate()
-        elif re.search('zc-ic-cc',my_dict[cls]):
-            schedule[cs][sch]["cc"] = 'CC'
         elif re.search('zc-icons-hd',my_dict[cls]):
             schedule[cs][sch]["quality"] = 'HD'
 
@@ -1053,7 +1051,8 @@ def parseTVGGrid(fn):
                     eaid = re.sub('[^0-9]',"",eaid)
                     if eaid != '':
                         programs[cp]['originalAirDate'] = eaid
-
+                if 'description' in tvo and tvo['description'] is not None:
+                    programs[cp]['description'] = tvo['description']
                 url = None
                 if 'EpisodeSEOUrl' in tvo and tvo['EpisodeSEOUrl'] != '':
                     url = tvo['EpisodeSEOUrl']
@@ -1451,7 +1450,7 @@ def printProgrammes(fh):
         if new:
             fh.write("\t\t<new />\n")
         # not part of XMLTV format yet?
-        if "-L" in options and live:
+        if live:
             fh.write("\t\t<live />\n")
         if cc:
             fh.write("\t\t<subtitles type=\"teletext\" />\n")
@@ -1651,7 +1650,7 @@ def option_parse():
     global outputXTVD, includeXMLTV, lineuptype, lineupname, lineuplocation, zlineupId, zipcode
 
     optlist = args = None
-    optlist, args  = getopt.getopt(sys.argv[1:], "?aA:bc:C:d:DeE:Fgi:Il:jJ:Lm:Mn:N:o:Op:P:qr:s:S:t:Tu:UwxY:zZ:")
+    optlist, args  = getopt.getopt(sys.argv[1:], "?aA:bc:C:d:DeE:Fgi:Il:jJ:Lm:Mn:N:o:Op:P:qr:s:S:t:Tu:UwxY:zZ:X:")
     options = dict(optlist)
     if "-?" in options:
         printHelp()
@@ -1757,7 +1756,7 @@ zap2xml <zap2xml_python\@something.com> (2015-12-14)\n\
 -O = use old tv_grab_na style channel ids (C###nnnn.zap2it.com)\n\
 -A \"new live\" = append \" *\" to program titles that are \"new\" and/or \"live\"\n\
 -M = copy movie_year to empty movie sub-title tags\n\
--L = output \"<live />\" tag (not part of xmltv.dtd)\n\
+-L = ((option removed)) output \"<live />\" tag (not part of xmltv.dtd)\n\
 -T = don't cache files containing programs with \""+sTBA +"\" titles \n\
 -P <http://proxyhost:port> = to use an http proxy\n\
 -C <configuration file> (default = \"" + confFile +"\")\n\
@@ -1799,7 +1798,7 @@ zap2xml <zap2xml_python\@something.com> (2015-12-14)\n\
 -A \"new live\" = append \" *\" to program titles that are \"new\" and/or \"live\"\n\       DONE
 -M = copy movie_year to empty movie sub-title tags\n\                                       DONE
 -U = UTF-8 encode output xml file (default = \"ISO-8859-1\")\n\                             REMOVE use UTF-8 only
--L = output \"<live />\" tag (not part of xmltv.dtd)\n\                                     DONE
+-L = ((option removed)) output \"<live />\" tag (not part of xmltv.dtd)\n\                  Removed as option
 -T = don't cache files containing programs with \""+sTBA +"\" titles \n\                    DONE
 -P <http://proxyhost:port> = to use an http proxy\n\                                        DONE
 -C <configuration file> (default = \"" + confFile +"\")\n\                                  DONE
