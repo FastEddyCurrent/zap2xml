@@ -12,5 +12,9 @@
     <setting label="30120" type="bool" id="cfirst" default="false"/>
     <setting label="30130" type="bool" id="cicons" default="false"/>
     <setting label="30140" type="bool" id="allc" default="false"/>
+    <setting type="lsep" />
+    <setting label="30150" type="bool" id="picons" default="false"/>
+    <setting label="30160" type="bool" id="xdetails" default="false"/>
+    <setting label="30170" type="bool" id="xdesc" default="false"/>
   </category>
 </settings>
