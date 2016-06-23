@@ -1359,6 +1359,8 @@ def printProgrammes(fh):
                     origdate = enc(convDateLocal(programs[p]["originalAirDate"]))
                     finaldate = datetime.datetime.strptime(origdate, "%Y%m%d").strftime('%B %d, %Y')
                     date = finaldate
+                if "movie_year" in programs[p]:
+                    date = programs[p]["movie_year"]
                 if "rating" in programs[p]:
                     ratings = enc(programs[p]["rating"]) + bullet
                 if "new" in schedule[station][s]:
