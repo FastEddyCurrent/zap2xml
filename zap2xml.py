@@ -1377,7 +1377,21 @@ def printProgrammes(fh):
                     hd = "HD" + bullet
                 if "cc" in schedule[station][s]:
                     cc = "CC" + bullet
-                tmp = tmp + live + new + ratings + hd + cc + date
+                if "credits" in programs[p]:
+                    global sortThing1, sortThing2
+                    sortThing1= str(p)
+                    sortThing2 = "credits"
+                    cast = "Cast: "
+                    castlist = ""
+                    prev = None
+                    for g in sorted(programs[p]["credits"], cmp=sortThings):
+                        if prev is None:
+                            castlist = enc(g)
+                            prev = g
+                        else:
+                            castlist = castlist + ", " + enc(g)
+                    cast = cast + castlist + bullet
+                tmp = tmp + live + new + ratings + hd + cc + cast + date
             tmp = tmp + end
             fh.write(tmp)
 
