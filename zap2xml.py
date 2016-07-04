@@ -1728,7 +1728,7 @@ def option_parse():
     if "-Y" in options: zlineupId = options["-Y"]
     if "-Z" in options: zipcode = options["-Z"]
     if "-J" in options and os.path.exists(options["-J"]): includeXMLTV = options["-J"]
-    if "-S" in options: sleeptime = int(options["-S"])
+    if "-S" in options: sleeptime = float(options["-S"])
     if "-m" in options: shiftMinutes = int(options["-m"])
 
 
