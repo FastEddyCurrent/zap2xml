@@ -1358,21 +1358,21 @@ def printProgrammes(fh):
                 if "originalAirDate" in programs[p]:
                     origdate = enc(convDateLocal(programs[p]["originalAirDate"]))
                     finaldate = datetime.datetime.strptime(origdate, "%Y%m%d").strftime('%B %d, %Y')
-                    date = finaldate
+                    date = "Aired: " + finaldate
                 if "movie_year" in programs[p]:
-                    date = programs[p]["movie_year"]
+                    date = "Released: " + programs[p]["movie_year"]
                 if "rating" in programs[p]:
                     ratings = enc(programs[p]["rating"]) + bullet
                 if "new" in schedule[station][s]:
                     new = "NEW" + bullet
                     origdate = startTime
                     finaldate = datetime.datetime.strptime(origdate, "%Y%m%d%H%M%S").strftime('%B %d, %Y')
-                    date = finaldate
+                    date = "Airs: " + finaldate
                 if "live" in schedule[station][s]:
                     live = "LIVE" + bullet
                     origdate = startTime
                     finaldate = datetime.datetime.strptime(origdate, "%Y%m%d%H%M%S").strftime('%B %d, %Y')
-                    date = finaldate
+                    date = "Airs: " + finaldate
                 if "quality" in schedule[station][s]:
                     hd = "HD" + bullet
                 if "cc" in schedule[station][s]:
@@ -1380,7 +1380,7 @@ def printProgrammes(fh):
                 tmp = tmp + live + new + ratings + hd + cc + date
             tmp = tmp + end
             fh.write(tmp)
-         
+
         if "credits" in programs[p]:
             fh.write("\t\t<credits>\n")
             global sortThing1, sortThing2
