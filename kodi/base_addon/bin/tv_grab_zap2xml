@@ -38,7 +38,8 @@ then
   PROGRAMICONS=`grep id=\"picons\" $ADDON_SETTINGS | awk '{print $3 }' | sed -e "s,value=,," -e "s,true,-I," -e "s,false,," -e "s,\",,g"`
   EXTRADETAILS=`grep id=\"xdetails\" $ADDON_SETTINGS | awk '{print $3 }' | sed -e "s,value=,," -e "s,true,-D," -e "s,false,," -e "s,\",,g"`
   EXTRADESCRIPTION=`grep id=\"xdesc\" $ADDON_SETTINGS | awk '{print $3 }' | sed -e "s,value=,," -e "s,true,-X," -e "s,false,," -e "s,\",,g"`
-  python $ADDON_DIR/zap2xml.py -u $USERID -p $PASSWORD -o $XMLTV_OUTPUT $EPGSOURCE $NUMDAYS $CHFIRST $ALLCHANNELS $CHANNELICONS $PROGRAMICONS $EXTRADETAILS $EXTRADESCRIPTION > zap2xml.log 2>&1
+  DELAYTIME=`grep id=\"delay\" $ADDON_SETTINGS | awk '{print $3 }' | sed -e "s,value,-S," -e "s,=, ," -e "s,\",,g"`
+  python $ADDON_DIR/zap2xml.py -u $USERID -p $PASSWORD -o $XMLTV_OUTPUT $EPGSOURCE $NUMDAYS $CHFIRST $ALLCHANNELS $CHANNELICONS $PROGRAMICONS $EXTRADETAILS $EXTRADESCRIPTION $DELAYTIME > zap2xml.log 2>&1
   cat $XMLTV_OUTPUT
   cd $CD
   exit 0
