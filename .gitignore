@@ -60,3 +60,15 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+
+# Temp files
+*.*~
+
+# Test Cache files
+cache/
+
+# Test xmltv files
+xmltv.xml
+
+# Test log
+zap2xml.log

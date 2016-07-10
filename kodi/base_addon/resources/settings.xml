@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+  <category label="32000">
+    <setting id="source" type="select" label="32030" lvalues="32031|32032"/>
+    <setting label="32010"  type="text"  id="User"  default="username"/>
+    <setting label="32020"  type="text"  id="Pass"  default="password"/>
+  </category>
+  <category label="32100">
+    <setting label="32110" type="slider" id="days" default="3" range="1,1,14" option="int"/>
+    <setting label="32120" type="bool" id="cfirst" default="false"/>
+    <setting label="32130" type="bool" id="cicons" default="false"/>
+    <setting label="32140" type="bool" id="allc" default="false"/>
+    <setting label="32170" type="bool" id="xdesc" default="false"/>
+    <setting type="sep"/>
+    <setting label="32149" type="lsep" />
+    <setting type="sep"/>
+    <setting label="32150" type="bool" id="picons" default="false"/>
+    <setting label="32160" type="bool" id="xdetails" default="false"/>
+    <setting label="32169" type="lsep" />
+    <setting label="32170" type="slider" id="delay" default="0" range="0,.25,3" option="float"/>
+  </category>
+</settings>

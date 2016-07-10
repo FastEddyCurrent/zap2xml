@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+	<!--zap2xml-->
+	<string id="32000">User Information</string>
+	<string id="32030">EPG Source</string>
+	<string id="32031">Zap2It</string>
+	<string id="32032">TV Guide</string>
+	<string id="32010">Username</string>
+	<string id="32020">Password</string>
+	<string id="32100">Options</string>
+	<string id="32110">Number of Days to Cache</string>
+	<string id="32120">Channel Name First (before channel number)</string>
+	<string id="32130">Download Channel Icons</string>
+	<string id="32140">Include All Channels (not just favorites)</string>
+	<string id="32170">Append Extra Details to Program Description</string>
+	<string id="32149">Each Item Below Will Add an Additional Download per Program</string>
+	<string id="32150">Download Program Icons</string>
+	<string id="32160">Download Extra Program Details</string>
+	<string id="32169">Add Delay If Extra Downloads Cause Failure</string>
+	<string id="32170">Delay Between http Requests</string>
+</strings>
+

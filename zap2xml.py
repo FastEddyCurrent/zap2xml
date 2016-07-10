@@ -23,7 +23,6 @@ import urllib2
 import datetime
 """
 import requests
-
 from requests.auth import HTTPBasicAuth
 from BeautifulSoup import BeautifulSoup
 import html2text
@@ -344,13 +343,26 @@ def on_td (self, tag, attrs):
                         if data: #sometimes we fail to get the url try to keep going
                             wbf(fn, data)
                             log.pout("[I] Parsing: " + cp,'info')
-                            parseJSONI(fn)
+                    parseJSONI(fn)
         elif re.search('zc-st',my_dict[cls]):
             inStationTd = 1
 
 
 def handleTags(text):
     global schedule,cs,sch
+    if "rating" not in programs[cp]:
+        if re.search("TV-Y",text):
+            programs[cp]["rating"] = 'TV-Y'
+        elif re.search("TV-Y7",text):
+            programs[cp]["rating"] = 'TV-Y7'
+        elif re.search("TV-G",text):
+            programs[cp]["rating"] = 'TV-G'
+        elif re.search("TV-PG",text):
+            programs[cp]["rating"] = 'TV-PG'
+        elif re.search("TV-14",text):
+            programs[cp]["rating"] = 'TV-14'
+        elif re.search("TV-MA",text):
+            programs[cp]["rating"] = 'TV-MA'
     if re.search("LIVE",text):
         if "live" not in schedule[cs][sch]:
             schedule[cs][sch]["live"] = {}
@@ -387,8 +399,6 @@ def on_li(self, tag, attrs):
         elif re.search('zc-icons-live',my_dict[cls]):
             schedule[cs][sch]["live"] = 'Live'
             setOriginalAirDate()
-        elif re.search('zc-ic-cc',my_dict[cls]):
-            schedule[cs][sch]["cc"] = 'CC'
         elif re.search('zc-icons-hd',my_dict[cls]):
             schedule[cs][sch]["quality"] = 'HD'
 
@@ -782,10 +792,11 @@ class MyHTMLParser(HTMLParser):
                 tba = 1
             on_span_zc_pg_t = False
         if on_p_zc_pg_d:
-            d = trim(data)
-            if len(d):
-                programs[cp]["description"] = d
-            on_p_zc_pg_d = False
+            if 'description' not in programs[cp]: # needed to not overwrite -D option
+                d = trim(data)
+                if len(d):
+                    programs[cp]["description"] = d
+                on_p_zc_pg_d = False
         if on_li_zc_ic:
             handleTags(data)
             on_li_zc_ic = False
@@ -1040,7 +1051,8 @@ def parseTVGGrid(fn):
                     eaid = re.sub('[^0-9]',"",eaid)
                     if eaid != '':
                         programs[cp]['originalAirDate'] = eaid
-
+                if 'description' in tvo and tvo['description'] is not None:
+                    programs[cp]['description'] = tvo['description']
                 url = None
                 if 'EpisodeSEOUrl' in tvo and tvo['EpisodeSEOUrl'] != '':
                     url = tvo['EpisodeSEOUrl']
@@ -1332,8 +1344,57 @@ def printProgrammes(fh):
                 fh.write("Movie (" + programs[p]["movie_year"] + ")")
             fh.write("</sub-title>\n")
         if "description" in programs[p] and programs[p]["description"] is not None:
-            tmp = "\t\t<desc lang=\"" + lang + "\">" + enc(programs[p]["description"]) + "</desc>\n"
+            fh.write("\t\t<desc lang=\"" + lang + "\">")
+            tmp = enc(programs[p]["description"]) + " "
+            end = "</desc>\n"
+            if "-X" in options:
+                ratings = ""
+                date=""
+                new = ""
+                live = ""
+                hd = ""
+                cc = ""
+                bullet = u" \u2022 "
+                if "originalAirDate" in programs[p]:
+                    origdate = enc(convDateLocal(programs[p]["originalAirDate"]))
+                    finaldate = datetime.datetime.strptime(origdate, "%Y%m%d").strftime('%B %d, %Y')
+                    date = "Aired: " + finaldate
+                if "movie_year" in programs[p]:
+                    date = "Released: " + programs[p]["movie_year"]
+                if "rating" in programs[p]:
+                    ratings = enc(programs[p]["rating"]) + bullet
+                if "new" in schedule[station][s]:
+                    new = "NEW" + bullet
+                    origdate = startTime
+                    finaldate = datetime.datetime.strptime(origdate, "%Y%m%d%H%M%S").strftime('%B %d, %Y')
+                    date = "Airs: " + finaldate
+                if "live" in schedule[station][s]:
+                    live = "LIVE" + bullet
+                    origdate = startTime
+                    finaldate = datetime.datetime.strptime(origdate, "%Y%m%d%H%M%S").strftime('%B %d, %Y')
+                    date = "Airs: " + finaldate
+                if "quality" in schedule[station][s]:
+                    hd = "HD" + bullet
+                if "cc" in schedule[station][s]:
+                    cc = "CC" + bullet
+                if "credits" in programs[p]:
+                    global sortThing1, sortThing2
+                    sortThing1= str(p)
+                    sortThing2 = "credits"
+                    cast = "Cast: "
+                    castlist = ""
+                    prev = None
+                    for g in sorted(programs[p]["credits"], cmp=sortThings):
+                        if prev is None:
+                            castlist = enc(g)
+                            prev = g
+                        else:
+                            castlist = castlist + ", " + enc(g)
+                    cast = cast + castlist + bullet
+                tmp = tmp + live + new + ratings + hd + cc + cast + date
+            tmp = tmp + end
             fh.write(tmp)
+
         if "credits" in programs[p]:
             fh.write("\t\t<credits>\n")
             global sortThing1, sortThing2
@@ -1369,10 +1430,10 @@ def printProgrammes(fh):
             sf =  "S%0*d" % (max(2, len(str(ss))), int(ss))
             e = programs[p]["episodeNum"]
             ef = "E%0*d" % (max(2, len(str(e))), int(e))
-            xs = int(s) - 1
+            xs = int(ss) - 1
             xe = int(e) - 1
-            if s > 0 or e > 0:
-                fh.write("\t\t<episode-num system=\"common\">" + sf + ef + "</episode-num>\n")
+            if ss > 0 or e > 0:
+                fh.write("\t\t<episode-num system=\"onscreen\">" + sf + ef + "</episode-num>\n")
 
         dd_prog_id = str(p)
         tmp = re.search("^(..\d{8})(\d{4})",dd_prog_id)
@@ -1405,7 +1466,7 @@ def printProgrammes(fh):
         if new:
             fh.write("\t\t<new />\n")
         # not part of XMLTV format yet?
-        if "-L" in options and live:
+        if live:
             fh.write("\t\t<live />\n")
         if cc:
             fh.write("\t\t<subtitles type=\"teletext\" />\n")
@@ -1605,7 +1666,7 @@ def option_parse():
     global outputXTVD, includeXMLTV, lineuptype, lineupname, lineuplocation, zlineupId, zipcode
 
     optlist = args = None
-    optlist, args  = getopt.getopt(sys.argv[1:], "?aA:bc:C:d:DeE:Fgi:Il:jJ:Lm:Mn:N:o:Op:P:qr:s:S:t:Tu:UwxY:zZ:")
+    optlist, args  = getopt.getopt(sys.argv[1:], "?aA:bc:C:d:DeE:Fgi:Il:jJ:Lm:Mn:N:o:Op:P:qr:s:S:t:Tu:UwxY:zZ:X")
     options = dict(optlist)
     if "-?" in options:
         printHelp()
@@ -1681,7 +1742,7 @@ def option_parse():
     if "-Y" in options: zlineupId = options["-Y"]
     if "-Z" in options: zipcode = options["-Z"]
     if "-J" in options and os.path.exists(options["-J"]): includeXMLTV = options["-J"]
-    if "-S" in options: sleeptime = int(options["-S"])
+    if "-S" in options: sleeptime = float(options["-S"])
     if "-m" in options: shiftMinutes = int(options["-m"])
 
 
@@ -1711,13 +1772,14 @@ zap2xml <zap2xml_python\@something.com> (2015-12-14)\n\
 -O = use old tv_grab_na style channel ids (C###nnnn.zap2it.com)\n\
 -A \"new live\" = append \" *\" to program titles that are \"new\" and/or \"live\"\n\
 -M = copy movie_year to empty movie sub-title tags\n\
--L = output \"<live />\" tag (not part of xmltv.dtd)\n\
+-L = ((option removed)) output \"<live />\" tag (not part of xmltv.dtd)\n\
 -T = don't cache files containing programs with \""+sTBA +"\" titles \n\
 -P <http://proxyhost:port> = to use an http proxy\n\
 -C <configuration file> (default = \"" + confFile +"\")\n\
 -S <#seconds> = sleep between requests to prevent flooding of server\n\
 -D = include details = 1 extra http request per program!\n\
 -I = include icons (image URLs) - 1 extra http request per program!\n\
+-X = append extra details to program description\n\
 -J <xmltv> = include xmltv file in output\n\
 -Y <lineupId> (if not using username/password)\n\
 -Z <zipcode> (if not using username/password)\n\
@@ -1752,13 +1814,14 @@ zap2xml <zap2xml_python\@something.com> (2015-12-14)\n\
 -A \"new live\" = append \" *\" to program titles that are \"new\" and/or \"live\"\n\       DONE
 -M = copy movie_year to empty movie sub-title tags\n\                                       DONE
 -U = UTF-8 encode output xml file (default = \"ISO-8859-1\")\n\                             REMOVE use UTF-8 only
--L = output \"<live />\" tag (not part of xmltv.dtd)\n\                                     DONE
+-L = ((option removed)) output \"<live />\" tag (not part of xmltv.dtd)\n\                  Removed as option
 -T = don't cache files containing programs with \""+sTBA +"\" titles \n\                    DONE
 -P <http://proxyhost:port> = to use an http proxy\n\                                        DONE
 -C <configuration file> (default = \"" + confFile +"\")\n\                                  DONE
 -S <#seconds> = sleep between requests to prevent flooding of server\n\                     DONE
 -D = include details = 1 extra http request per program!\n\                                 DONE
 -I = include icons (image URLs) - 1 extra http request per program!\n\                      DONE
+-X = append extra details to program description\n\                                         DONE
 -J <xmltv> = include xmltv file in output\n\                                                DONE
 -Y <lineupId> (if not using username/password)\n\                                           TEST FIX
 -Z <zipcode> (if not using username/password)\n\                                            TEST FIX dump lineup for zipcode
