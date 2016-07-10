@@ -21,6 +21,7 @@ import urllib
 import inspect
 import urllib2
 import datetime
+import PIL
 """
 import requests
 
@@ -139,6 +140,8 @@ urlRoot = 'http://tvschedule.zap2it.com/tvlistings/'
 tvgurlRoot = 'http://mobilelistings.tvguide.com/'
 tvgMapiRoot = 'http://mapi.tvguide.com/'
 tvgurl = 'http://www.tvguide.com/'
+tvgspritesurl = 'http://static.tvgcdn.net/sprites/'
+
 br = None #browser global
 gridHours = 0
 loggedinMatchZ = 0
@@ -184,12 +187,13 @@ def reSearch(regexp,string, flags):
 
 # for image logo files
 def getURLfile(url, fn):
-    global retries, sleeptime
+    global retries, sleeptime, br
     rc = 0
     while rc < retries:
         log.pout("Getting: " + url,'info')
         try:
             mechanize.urlretrieve(url, fn)
+            #br.retrieve(url, fn)
             return
         except mechanize.HTTPError as e:
             log.pout(e.message,'error',func=True)
@@ -368,10 +372,10 @@ def handleTags(text):
 
 
 on_li_zc_ic = None
-
+on_li_zc_ic_tvratings = None
 
 def on_li(self, tag, attrs):
-    global schedule,cs,sch,on_li_zc_ic
+    global schedule,cs,sch,on_li_zc_ic, on_li_zc_ic_tvratings
     my_dict = {}
     cls = 'class'
     for attr in attrs:
@@ -382,6 +386,8 @@ def on_li(self, tag, attrs):
             setOriginalAirDate()
         elif re.search('zc-ic-cc',my_dict[cls]):
             schedule[cs][sch]["cc"] = 'CC'
+        elif re.search('zc-ic-tvratings',my_dict[cls]):
+           on_li_zc_ic_tvratings = True
         elif re.search('zc-ic',my_dict[cls]):
             on_li_zc_ic = True
         elif re.search('zc-icons-live',my_dict[cls]):
@@ -507,10 +513,12 @@ on_span_zc_pg_e = None
 on_span_zc_st_c = None
 on_span_zc_ic_s = None
 on_span_zc_pg_t = None
-
+on_span_zc_ic_premiere = None
+on_span_zc_ic_finale = None
 
 def on_span(self, tag, attrs):
     global on_span_zc_pg_y, on_span_zc_pg_e, on_span_zc_st_c, on_span_zc_ic_s, on_span_zc_pg_t
+    global on_span_zc_ic_premiere, on_span_zc_ic_finale
     my_dict = {}
     for attr in attrs:
         my_dict[attr[0]] = attr[1]
@@ -526,6 +534,10 @@ def on_span(self, tag, attrs):
             on_span_zc_ic_s = True
         elif re.search("zc-pg-t", my_dict["class"]):
             on_span_zc_pg_t = True
+        elif re.search("zc-ic-premiere", my_dict["class"]):
+            on_span_zc_ic_premiere = True
+        elif re.search("zc-ic-finale", my_dict["class"]):
+            on_span_zc_ic_finale = True
 
 
 def loginZAP(br):
@@ -622,6 +634,14 @@ def trim (shift):
   s = re.sub("\s+$","",s)
   return s
 
+def trim2(shift):
+  s = trim(shift)
+  s = re.sub("[^\w\s\(\)\,]","",s,0,re.IGNORECASE)
+  #$s =~ s/[^\w\s\(\)\,]//gsi;
+  s = re.sub("\s+"," ",s,0,re.IGNORECASE)
+  #$s =~ s/\s+/ /gsi;
+  return s
+
 
 # way to divide a string by 1000
 def _rtrim3 (shift):
@@ -698,7 +718,7 @@ class MyHTMLParser(HTMLParser):
         global cbdata,on_div_zc_tn_c,on_div_zc_tn_t
         global on_span_zc_pg_y, on_span_zc_pg_e, on_span_zc_st_c, on_span_zc_ic_s
         global on_span_zc_pg_t
-        global on_p_zc_pg_d, on_li_zc_ic
+        global on_p_zc_pg_d, on_li_zc_ic, on_li_zc_ic_tvratings
        # print "End tag  :", tag
         if tag == 'td' or tag == 'th':
             inStationTd = 0
@@ -717,6 +737,7 @@ class MyHTMLParser(HTMLParser):
             on_p_zc_pg_d = False
         if tag == 'li':
             on_li_zc_ic = False
+            on_li_zc_ic_tvratings = False
         if tag == 'head':
             head_found = False
 
@@ -724,8 +745,9 @@ class MyHTMLParser(HTMLParser):
         global programs,cbdata,cp,on_div_zc_tn_c,gridtimes,on_div_zc_tn_t
         global on_span_zc_pg_y, on_span_zc_pg_e, on_span_zc_st_c, on_span_zc_ic_s
         global on_span_zc_pg_t
-        global tba, sTBA, stations, cs
-        global on_p_zc_pg_d,on_li_zc_ic
+        global tba, sTBA, stations, cs, sch
+        global on_p_zc_pg_d,on_li_zc_ic, on_li_zc_ic_tvratings
+        global on_span_zc_ic_premiere, on_span_zc_ic_finale
         # print "Data     :", data
 
         if cbdata == 'title':       #set in on_a assume not special chars for now
@@ -783,12 +805,22 @@ class MyHTMLParser(HTMLParser):
             on_span_zc_pg_t = False
         if on_p_zc_pg_d:
             d = trim(data)
-            if len(d):
+            if len(d) and "description" not in  programs[cp]:
                 programs[cp]["description"] = d
             on_p_zc_pg_d = False
         if on_li_zc_ic:
             handleTags(data)
             on_li_zc_ic = False
+        if on_li_zc_ic_tvratings:
+            programs[cp]["rating"] = trim2(data)
+            on_li_zc_ic_tvratings = False
+        #check to see if we need to add handle_endtag span set globals to false?
+        if on_span_zc_ic_premiere:
+            schedule[cs][sch]["premiere"] = trim(data)
+            on_span_zc_ic_premiere = False
+        if on_span_zc_ic_finale:
+            schedule[cs][sch]["finale"] = trim(data)
+            on_span_zc_ic_finale = False
 
     # def handle_comment(self, data):
     #     print "Comment  :", data
@@ -914,7 +946,51 @@ def sortPhash(a,b): # todo make ints and subtract?
     if b > a:
         return 1
 
+def parseTVGIcons():
+    from PIL import Image
 
+    global tvgspritesurl, zlineupId
+
+    rc = getURL(tvgspritesurl + zlineupId + ".css")
+    tmp = re.search( "background-image:.+?url\((.+?)\)",rc)
+    if tmp is not None:
+        url = tvgspritesurl + tmp.group(1)
+    else:
+        log("Could Not find channel icon background-image" ,'warn')
+        return -1
+    try:
+        os.stat(iconDir)
+    except Exception as e:
+        os.mkdir(iconDir)
+
+    (dirName, fileName) = os.path.split(url)
+    (fileBaseName, fileExtension)=os.path.splitext(fileName)
+    f = iconDir + "/sprites-" + fileBaseName + fileExtension
+    if not os.path.exists(f):
+        getURLfile(url,f)
+
+    image = Image.open(f)
+    iconw = 30
+    iconh = 20
+    chIcons = rc.split("\n")
+    for ic in chIcons:
+        m = re.search("listings-channel-icon-(.+?)\{.+?position:.*?\-(\d+).+?(\d+).*?\}", ic ,re.IGNORECASE)
+        if m:
+            cid = int(m.group(1))
+            iconx = int(m.group(2))
+            icony = int(m.group(3))
+
+            imgCpy = image.copy()
+            region = imgCpy.crop((iconx,icony,iconx+iconw, icony+iconh))
+
+            if cid not in stations:
+                stations[cid]= {}
+                #continue
+            stations[cid]["logo"] = "sprite-" + str(cid)
+            stations[cid]["logoExt"] = fileExtension
+            ifn = iconDir +  "/" + stations[cid]["logo"] + stations[cid]["logoExt"]
+            region.save(ifn)
+    return
 def parseTVGD(fn):
     global programs, cp
 
@@ -1051,7 +1127,7 @@ def parseTVGGrid(fn):
                 if url:
                     programs[cp]['url'] = tvgurl[:-1] + url
 
-    if '-I' in options or ('-D' in options and catid ==1): # icons or details
+    if '-I' in options or ('-D' in options and catid ==1): # images or details
         fn = os.path.join(cacheDir, str(cp) + ".js.gz")
         if not os.path.exists(fn):  #bug forgot not
             data = getURL(tvgMapiRoot + "listings/details?program=" + ("%d" % cp)) # Beware the headers
@@ -1197,13 +1273,14 @@ def sortChan(a,b):
             return 0
         if tmp > 0.00:
             return 1
-    else:
+    elif "name" in stations[a] and "name" in stations[b]:
         if stations[a]["name"] < stations[b]["name"]:
             return -1
         if stations[a]["name"] == stations[b]["name"]:
             return 0
         if stations[a]["name"] > stations[b]["name"]:
             return 1
+    return 0
 
 
 def hex2dec_e(matchObj):
@@ -1250,12 +1327,14 @@ def printChannels(fh):
     sname = None
     fname = None
     for key in sorted( stations, cmp=sortChan):
+        snum = None
         if "name" in stations[key]:
             sname = enc(stations[key]["name"])
         if "fullname" in stations[key]:
             fname = enc(stations[key]["fullname"])
-        snum = stations[key]["number"]
-        fh.write("\t<channel id=\"" + stationToChannel(key) + "\">\n")
+        if "number" in stations[key]:
+            snum = stations[key]["number"]
+            fh.write("\t<channel id=\"" + stationToChannel(key) + "\">\n")
         if "-F" in options and sname is not None:
             fh.write("\t\t<display-name>" + sname + "</display-name>\n")
         if snum is not None:
@@ -1297,6 +1376,13 @@ sortStation = None
 sortThing1 = None
 sortThing2 = None
 
+#because stations get polluted by tvguide parseTVGIcons leaving mostly empty station entry only logo and ext
+#sesequent processing pukes on not finding the other entries so scrub them out after icon processing is done
+def scrubStations():
+    for station in stations.keys():
+        if len(stations[station]) == 2 and "logo" in stations[station] and "logoExt" in stations[station]:
+            del stations[station]
+    return
 
 def printProgrammes(fh):
     global stations,sortStation,sortThing1, sortThing2
@@ -1402,6 +1488,10 @@ def printProgrammes(fh):
                 date = convDateLocal(programs[p]["originalAirDate"])
                 fh.write("start=\"" + date + "000000\" ")
             fh.write("/>\n")
+        if "premiere" in schedule[station][s]:
+            fh.write("\t\t<premiere>" + schedule[station][s]["premiere"] + "</premiere>\n")
+        if "finale" in schedule[station][s]:
+            fh.write("\t\t<last-chance>" + schedule[station][s]["finale"] + "</last-chance>\n")
         if new:
             fh.write("\t\t<new />\n")
         # not part of XMLTV format yet?
@@ -1780,10 +1870,10 @@ def main():
         deleteOldCache()
 
         if '-z' in options:
-            if '-i' in options:
-                log.pout("Warning -i option not supported for TV Guide\n",'warn')
             if '-a' not in options:  #oops missed not
                 login()
+            if '-i' in options:
+                parseTVGIcons()
             gridHours = 3
             maxCount = days * (24 / gridHours)
             ncCount = maxCount - (ncdays * (24 / gridHours))
@@ -1886,6 +1976,7 @@ def main():
                 ms += gridHours * 3600 * 1000
                 count += 1
 
+        scrubStations()
         s2 = time.time()
         log.pout(("Downloaded %d%s%d%s" %(tb," bytes in ",treq," http requests.\n")),'info')
         if expired > 0:
