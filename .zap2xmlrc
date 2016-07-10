@@ -1,5 +1,4 @@
-user=fromme_family@yahoo.com
-pass=Karl99
+user=somebody@domain.com
+pass=password
 #proxy=127.0.0.1:80
 stuff=stuff #ignored
-
